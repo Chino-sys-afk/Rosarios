@@ -7,11 +7,8 @@ for /d %%i in ("C:\Users\jose_\AppData\Local\GitHubDesktop\app-*") do (
 )
 if "%GIT_EXE%"=="" set "GIT_EXE=git"
 
-:: Crear un pequeño archivo invisible con la hora exacta para obligar a Vercel a limpiar la caché
-echo %DATE% %TIME% > version.txt
-
-:: Sincronización rápida con Git
+:: Forzar actualización limpia
 "%GIT_EXE%" add -A
-"%GIT_EXE%" commit -m "Actualizacion automatica con control de cache" --allow-empty
+"%GIT_EXE%" commit -m "Actualizacion de reporte" --allow-empty
 "%GIT_EXE%" push origin main --porcelain
 exit
