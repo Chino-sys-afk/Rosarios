@@ -21,5 +21,4 @@ echo %TIMESTAMP% > version.txt
 "%GIT_EXE%" commit -m "Actualizacion movil %TIMESTAMP%" --allow-empty
 "%GIT_EXE%" push origin main --porcelai
 
-pause
 exit
