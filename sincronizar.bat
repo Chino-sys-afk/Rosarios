@@ -1,7 +1,7 @@
 @echo off
 cd /d "C:\Users\jose_\Documents\GitHub\Rosarios"
 
-:: Forzar el cierre temporal de cualquier proceso o visor que bloquee el PDF
+:: Forzar el cierre temporal de cualquier visor que bloquee el PDF local
 taskkill /f /im acroRd32.exe >nul 2>&1
 taskkill /f /im msedge.exe /fi "WINDOWTITLE eq reporte.pdf*" >nul 2>&1
 
@@ -22,12 +22,14 @@ set TIMESTAMP=%MYDATE%_%MYTIME: =0%
 :: Crear una copia del PDF con nombre único para evitar la caché
 copy /y "reporte.pdf" "reporte_%TIMESTAMP%.pdf" >nul
 
-:: Actualizar automáticamente el index.html con el nuevo sello único
+:: Actualizar automáticamente el index.html incorporando anti-caché total para móviles
 echo ^<!DOCTYPE html^> > index.html
 echo ^<html lang="es"^> >> index.html
 echo ^<head^> >> index.html
 echo      ^<meta charset="UTF-8"^> >> index.html
 echo      ^<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"^> >> index.html
+echo      ^<meta http-equiv="Pragma" content="no-cache"^> >> index.html
+echo      ^<meta http-equiv="Expires" content="0"^> >> index.html
 echo      ^<title^>Reporte Rosarios^</title^> >> index.html
 echo      ^<style^> >> index.html
 echo          body, html { margin: 0; padding: 0; height: 100%%; overflow: hidden; background: #525659; } >> index.html
@@ -35,7 +37,7 @@ echo          iframe { width: 100%%; height: 100%%; border: none; } >> index.htm
 echo      ^</style^> >> index.html
 echo ^</head^> >> index.html
 echo ^<body>^> >> index.html
-echo      ^<iframe src="reporte_%TIMESTAMP%.pdf"^>^</iframe^> >> index.html
+echo      ^<iframe src="reporte_%TIMESTAMP%.pdf?v=%TIMESTAMP%"^>^</iframe^> >> index.html
 echo ^</body^> >> index.html
 echo ^</html^> >> index.html
 
