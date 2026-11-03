@@ -7,7 +7,7 @@ for /d %%i in ("C:\Users\jose_\AppData\Local\GitHubDesktop\app-*") do (
 )
 if "%GIT_EXE%"=="" set "GIT_EXE=git"
 
-:: Sincronizar primero los cambios remotos para evitar el bloqueo non-fast-forward
+:: 1. PRIMERO LO PRIMERO: Traer cualquier cambio de la nube antes de tocar nada localmente
 "%GIT_EXE%" pull origin main --rebase
 
 :: Generar un sello de tiempo único basado en la fecha y hora exactas
@@ -35,7 +35,7 @@ echo      ^<iframe src="reporte_%TIMESTAMP%.pdf"^>^</iframe^> >> index.html
 echo ^</body^> >> index.html
 echo ^</html^> >> index.html
 
-:: Subir los cambios a GitHub de forma limpia y rápida
+:: 2. SUBIR AL FINAL: Empaquetar y enviar todo limpio a GitHub
 "%GIT_EXE%" add -A
 "%GIT_EXE%" commit -m "Actualizacion dinamica reporte_%TIMESTAMP%" --allow-empty
 "%GIT_EXE%" push origin main
