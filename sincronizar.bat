@@ -22,7 +22,7 @@ set TIMESTAMP=%MYDATE%_%MYTIME: =0%
 :: Crear una copia del PDF con nombre único para evitar la caché
 copy /y "reporte.pdf" "reporte_%TIMESTAMP%.pdf" >nul
 
-:: Actualizar automáticamente el index.html con un script de recarga anti-caché absoluto para móviles
+:: Actualizar automáticamente el index.html con un contenedor adaptado para evitar la caché en móviles
 echo ^<!DOCTYPE html^> > index.html
 echo ^<html lang="es"^> >> index.html
 echo ^<head^> >> index.html
@@ -37,14 +37,14 @@ echo          iframe { width: 100%%; height: 100%%; border: none; } >> index.htm
 echo      ^</style^> >> index.html
 echo ^</head^> >> index.html
 echo ^<body>^> >> index.html
-echo      ^<iframe id="pdfFrame" src="reporte_%TIMESTAMP%.pdf?v=%TIMESTAMP%"^>^</iframe^> >> index.html
+echo      ^<iframe src="reporte_%TIMESTAMP%.pdf?v=%TIMESTAMP%"^>^</iframe^> >> index.html
 echo      ^<script^> >> index.html
-echo          // Forzar recarga si el navegador móvil intenta restaurar la página desde el historial de caché
-echo          window.addEventListener^^('pageshow', function(event) {^^^j
-echo              if (event.persisted) {^^^j
-echo                  window.location.reload(true);^^^j
-echo              }^^^j
-echo          });^^^j
+echo          // Forzar la invalidación del almacenamiento en navegadores móviles al cargar
+echo          if (window.navigator && navigator.serviceWorker) {
+echo              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+echo                  for(let registration of registrations) { registration.unregister(); }
+echo              });
+echo          }
 echo      ^</script^> >> index.html
 echo ^</body^> >> index.html
 echo ^</html^> >> index.html
