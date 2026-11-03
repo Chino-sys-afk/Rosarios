@@ -22,32 +22,8 @@ set TIMESTAMP=%MYDATE%_%MYTIME: =0%
 :: Crear una copia del PDF con nombre único para evitar la caché
 copy /y "reporte.pdf" "reporte_%TIMESTAMP%.pdf" >nul
 
-:: Actualizar automáticamente el index.html con un contenedor adaptado para evitar la caché en móviles
-echo ^<!DOCTYPE html^> > index.html
-echo ^<html lang="es"^> >> index.html
-echo ^<head^> >> index.html
-echo      ^<meta charset="UTF-8"^> >> index.html
-echo      ^<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"^> >> index.html
-echo      ^<meta http-equiv="Pragma" content="no-cache"^> >> index.html
-echo      ^<meta http-equiv="Expires" content="0"^> >> index.html
-echo      ^<title^>Reporte Rosarios^</title^> >> index.html
-echo      ^<style^> >> index.html
-echo          body, html { margin: 0; padding: 0; height: 100%%; overflow: hidden; background: #525659; } >> index.html
-echo          iframe { width: 100%%; height: 100%%; border: none; } >> index.html
-echo      ^</style^> >> index.html
-echo ^</head^> >> index.html
-echo ^<body>^> >> index.html
-echo      ^<iframe src="reporte_%TIMESTAMP%.pdf?v=%TIMESTAMP%"^>^</iframe^> >> index.html
-echo      ^<script^> >> index.html
-echo          // Forzar la invalidación del almacenamiento en navegadores móviles al cargar
-echo          if (window.navigator && navigator.serviceWorker) {
-echo              navigator.serviceWorker.getRegistrations().then(function(registrations) {
-echo                  for(let registration of registrations) { registration.unregister(); }
-echo              });
-echo          }
-echo      ^</script^> >> index.html
-echo ^</body^> >> index.html
-echo ^</html^> >> index.html
+:: Generar el index.html usando PowerShell para evitar cualquier error de caracteres especiales
+powershell -Command "$html = '<!DOCTYPE html><html lang=\"es\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\"><meta http-equiv=\"Pragma\" content=\"no-cache\"><meta http-equiv=\"Expires\" content=\"0\"><title>Reporte Rosarios</title><style>body { font-family: Arial, sans-serif; background: #525659; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; box-sizing: border-box; }.card { background: white; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); max-width: 400px; width: 100%%; }h1 { font-size: 22px; color: #333; margin-bottom: 10px; }p { color: #666; font-size: 14px; margin-bottom: 25px; }.btn { display: block; background: #0078D4; color: white; padding: 16px 20px; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }.btn:active { background: #005a9e; }</style></head><body><div class=\"card\"><h1>Reporte Actualizado</h1><p>Pulsa el botón para ver la versión más reciente del reporte.</p><a class=\"btn\" href=\"reporte_%TIMESTAMP%.pdf\" target=\"_blank\">Abrir Reporte de Hoy</a></div></body></html>'; Set-Content -Path 'index.html' -Value $html -Encoding UTF8"
 
 :: 2. Empaquetar y enviar de manera segura a GitHub
 "%GIT_EXE%" add -A
