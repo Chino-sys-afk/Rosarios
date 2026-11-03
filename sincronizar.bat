@@ -7,6 +7,9 @@ for /d %%i in ("C:\Users\jose_\AppData\Local\GitHubDesktop\app-*") do (
 )
 if "%GIT_EXE%"=="" set "GIT_EXE=git"
 
+:: Sincronizar primero los cambios remotos para evitar el bloqueo non-fast-forward
+"%GIT_EXE%" pull origin main --rebase
+
 :: Generar un sello de tiempo único basado en la fecha y hora exactas
 for /f "tokens=1-4 delims=/ " %%a in ("%DATE%") do set MYDATE=%%c%%b%%a
 for /f "tokens=1-3 delims=:." %%a in ("%TIME%") do set MYTIME=%%a%%b%%c
@@ -27,7 +30,7 @@ echo          body, html { margin: 0; padding: 0; height: 100%%; overflow: hidde
 echo          iframe { width: 100%%; height: 100%%; border: none; } >> index.html
 echo      ^</style^> >> index.html
 echo ^</head^> >> index.html
-echo ^<body^> >> index.html
+echo ^<body>^> >> index.html
 echo      ^<iframe src="reporte_%TIMESTAMP%.pdf"^>^</iframe^> >> index.html
 echo ^</body^> >> index.html
 echo ^</html^> >> index.html
@@ -35,7 +38,7 @@ echo ^</html^> >> index.html
 :: Subir los cambios a GitHub de forma limpia y rápida
 "%GIT_EXE%" add -A
 "%GIT_EXE%" commit -m "Actualizacion dinamica reporte_%TIMESTAMP%" --allow-empty
-"%GIT_EXE%" push origin main --porcelain
+"%GIT_EXE%" push origin main
 
 pause
 exit
