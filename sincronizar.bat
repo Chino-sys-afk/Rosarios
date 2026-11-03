@@ -18,7 +18,7 @@ set TIMESTAMP=%MYDATE%_%MYTIME: =0%
 :: Crear una copia del PDF con nombre único para evitar la caché
 copy /y "reporte.pdf" "reporte_%TIMESTAMP%.pdf" >nul
 
-:: Generar un index.html con redirección automática instantánea al PDF del día
+:: Generar un index.html con redirección inmediata EN LA MISMA PESTAÑA (sin target=_blank)
 powershell -Command "$html = '<!DOCTYPE html><html lang=\"es\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\"><meta http-equiv=\"Pragma\" content=\"no-cache\"><meta http-equiv=\"Expires\" content=\"0\"><meta http-equiv=\"refresh\" content=\"0;url=reporte_%TIMESTAMP%.pdf\"><title>Abriendo Reporte...</title><script>window.location.replace(\"reporte_%TIMESTAMP%.pdf\");</script></head><body style=\"font-family: Arial; text-align: center; padding-top: 100px; background: #525659; color: white;\"><h2>Abriendo el reporte actualizado...</h2><p><a href=\"reporte_%TIMESTAMP%.pdf\" style=\"color: #85c1e9;\">Pulsa aquí si no se abre automáticamente</a></p></body></html>'; Set-Content -Path 'index.html' -Value $html -Encoding UTF8"
 
 :: 2. Empaquetar y enviar de manera segura a GitHub
@@ -28,6 +28,6 @@ powershell -Command "$html = '<!DOCTYPE html><html lang=\"es\"><head><meta chars
 
 echo.
 echo ========================================================
-echo Sincronizacion y redireccion automatica listas.
+echo Sincronizacion completada con exito.
 echo ========================================================
 pause
