@@ -36,4 +36,6 @@ echo ^</html^> >> index.html
 "%GIT_EXE%" add -A
 "%GIT_EXE%" commit -m "Actualizacion dinamica reporte_%TIMESTAMP%" --allow-empty
 "%GIT_EXE%" push origin main --porcelain
+
+pause
 exit
