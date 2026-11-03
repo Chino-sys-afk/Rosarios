@@ -1,7 +1,7 @@
 @echo off
 cd /d "C:\Users\jose_\Documents\GitHub\Rosarios"
 
-:: Forzar el cierre temporal de cualquier visor que bloquee el PDF local
+:: Forzar el cierre temporal de visores locales que bloqueen el PDF
 taskkill /f /im acroRd32.exe >nul 2>&1
 taskkill /f /im msedge.exe /fi "WINDOWTITLE eq reporte.pdf*" >nul 2>&1
 
@@ -22,7 +22,7 @@ set TIMESTAMP=%MYDATE%_%MYTIME: =0%
 :: Crear una copia del PDF con nombre único para evitar la caché
 copy /y "reporte.pdf" "reporte_%TIMESTAMP%.pdf" >nul
 
-:: Actualizar automáticamente el index.html incorporando anti-caché total para móviles
+:: Actualizar automáticamente el index.html con un script de recarga anti-caché absoluto para móviles
 echo ^<!DOCTYPE html^> > index.html
 echo ^<html lang="es"^> >> index.html
 echo ^<head^> >> index.html
@@ -37,7 +37,15 @@ echo          iframe { width: 100%%; height: 100%%; border: none; } >> index.htm
 echo      ^</style^> >> index.html
 echo ^</head^> >> index.html
 echo ^<body>^> >> index.html
-echo      ^<iframe src="reporte_%TIMESTAMP%.pdf?v=%TIMESTAMP%"^>^</iframe^> >> index.html
+echo      ^<iframe id="pdfFrame" src="reporte_%TIMESTAMP%.pdf?v=%TIMESTAMP%"^>^</iframe^> >> index.html
+echo      ^<script^> >> index.html
+echo          // Forzar recarga si el navegador móvil intenta restaurar la página desde el historial de caché
+echo          window.addEventListener^^('pageshow', function(event) {^^^j
+echo              if (event.persisted) {^^^j
+echo                  window.location.reload(true);^^^j
+echo              }^^^j
+echo          });^^^j
+echo      ^</script^> >> index.html
 echo ^</body^> >> index.html
 echo ^</html^> >> index.html
 
